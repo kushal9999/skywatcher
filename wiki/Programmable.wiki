@@ -1,0 +1,159 @@
+#summary The document for Programmable Mount
+
+= Introduction =
+The Programmable Mount app provide a new way for user to interact with their mounts. User can now control their mounts by python script; therefore, they can DIY their own applications such as Panorama, Time Lapse, CCTV or event more with their mounts.
+
+= User interface =
+<img src="http://skywatcher.googlecode.com/files/p4.png">
+
+= Sample Script = 
+
+== Sample 1 Take photos in specify positions ==
+Taking 10 Photos in on 10 points (0,0), (20,0), (40, 0) ... (180,0)
+{{{
+for i in range(10):
+   Controller.AddMarker(i*20, 0) # Add bookmarkers
+
+for i in Controller.GetMarkers():
+   Controller.Goto(i.Axis1, i.Axis2) # Goto each defined position
+   Controller.SetSwitch(True)        # Trigger on the camera
+   Controller.Sleep(1000)            # Wait 1sec
+   Controller.SetSwitch(False)       # Trigger off the camera
+}}}
+
+== Sample 2 Slew the mount in low speed ==
+{{{
+Controller.AxisSlew(AXIS1, 1)  # Start to slew the mount's axis1 with 1 degree/sec
+Controller.AxisSlew(AXIS2, -1) # Start to slew the mount's axis2 with -1 degree/sec
+Controller.Sleep(5000)     # Let the mount slew for 5 sec
+Controller.AxisStop(AXIS1)     # Stop the movement on axis1
+Controller.AxisStop(AXIS2)     # Stop the movement on axis2
+}}}
+= Controller Class =
+The programmable app provide a wrapper class Controller which provides high level mount control function and it can be used in the IronPython? Script environment.
+
+
+==Mount Controller Methods ==
+=== Init(int mount, int com)=== 
+
+Connect and Initialize the mount. 
+
+Arguments:
+
+ * mount: mount's id (not support now)
+ * com: A COM port number for serial port connection.
+=== AxisSlew (AXISID id, double degree)=== 
+Slew specify axis with a fixed speed
+
+Arguments:
+
+ * axis: The target axis.
+ * degree: The speed for movement (unit: degree).
+=== AxisSlewTo (AXISID id, double degree)=== 
+
+Slew specify axis to specify position.
+
+Arguments:
+
+ * axis: The target axis.
+ * degree: The target position for movement (unit: degree).
+
+=== AxisStop (AXISID id)=== 
+Stop specify axis's current action
+
+Arguments:
+
+ * axis: the target axis.
+
+=== SetAxisPosition (AXISID id, double degree)=== 
+Set current specify axis's position value.
+
+Arguments:
+
+ * axis: the target axis.
+ * degree: the position value (unit: degree)
+
+=== GetAxisPosition (AXISID id, double degree)=== 
+Return current axis's position value. (unit: degree) Arguments:
+
+Arguments:
+
+ * axis: the target axis.
+
+=== GetAxisStatus (AXISID id)=== 
+Return a AXISSTATUS struct represent current axis's status
+
+Arguments:
+
+ * axis: the target axis.
+=== SetSwitch (bool OnOff )=== 
+On/Off the trigger switch on mount. (Only apply to specify mounts)
+
+Arguments
+
+ * onoff: Turn on/off the trigger switch.
+
+==Markers Methods==
+Marker method help user to use the GUI to edit / view / control the target positions of mount movements.
+
+
+===InsertMarker (int index, Marker m)===
+Insert a marker in the specify index.
+
+Arguments:
+
+ * index: index of this marker.
+ * m: the marker need to be inserted.
+===AddMarker (double axis1, double axis2)===
+Append a new marker to the bookmarker list.
+
+Arguments:
+
+ * axis1: the marker's axis1 position (unit: degree)
+ * axis2: the marker's axis2 position (unit: degree)
+
+===RemoveMarkerAt (int index)===
+Remove the marker at specify index
+
+Arguments:
+
+ * index: the marker's index
+
+===RemoveMarker (Marker m)===
+Remove the marker in the list
+
+Arguments:
+
+ * m: the marker user wants to remove.
+===ClearMarker ()===
+Clear all markers in the list.
+
+
+===GetMarker (int index)===
+Return the marker at specify index
+
+Arguments:
+
+ * index: the marker's index
+
+===GetMarkers ()===
+Return all markers in the marker list.
+
+
+==Helper Method==
+Provide some additional support for mount control.
+
+
+===Goto(double axis1, double axis2)===
+Goto the target position in synchronous mode. (method will return after the goto movements done)
+
+Arguments:
+
+ * axis1: the target position of axis1. (unit: degree)
+ * axis2: the target position of axis2. (unit: degree)
+===Sleep(int milliseconds)===
+wait for a specify time.
+
+Arguments:
+
+ * milliseconds: the time (unit: milliseconds)
