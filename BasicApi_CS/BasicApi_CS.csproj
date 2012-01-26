@@ -46,7 +46,6 @@
     <Compile Include="Mount_Simulator.cs" />
     <Compile Include="ASTRO_TYPE_DEF.cs" />
     <Compile Include="Mount.cs" />
-    <Compile Include="Mount_Celestron.cs" />
     <Compile Include="Mount_Skywatcher.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
